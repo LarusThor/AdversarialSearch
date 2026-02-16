@@ -65,7 +65,6 @@ public class SearchAgent implements Agent
         
         // Need to check for all possible moves if its valid and add to a 2D array
         ArrayList<int[]> legalMoves = new ArrayList<>();
-        int numPlayers = currState.getWhiteList().length;
         
         int[][] whitePos = currState.getWhiteList();
         int[][] blackPos = currState.getBlackList();
@@ -98,14 +97,16 @@ public class SearchAgent implements Agent
                 int newY = queenY;
 
                 while (true){
-                    newX ++;
-                    newY ++;
+                    newX += dirX;
+                    newY += dirY;
 
                     if (newX < 1 || newX > width || newY < 1 || newY > height){
                         break;
                     }
 
-                    if (currentBoard[newX][newY] != '-'){
+                    char square = currentBoard[newY-1][newX-1];
+
+                    if (square != '-'){
                         break;
                     }
 
