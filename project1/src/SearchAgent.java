@@ -140,10 +140,32 @@ public class SearchAgent implements Agent
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
 			int x1,y1,x2,y2;
-			x1 = random.nextInt(width)+1;
-			y1 = random.nextInt(height)+1;
-			x2 = random.nextInt(width)+1;
-			y2 = random.nextInt(height)+1;
+            ArrayList<int[]> legalMoves = LegalMoveArr(lastMove, currentState);
+
+            if (legalMoves.isEmpty()) {
+                // No legal moves - handle this case
+                return "noop"; // or handle game over
+            }
+            int[] randomMove = legalMoves.get(random.nextInt(legalMoves.size()));
+			x1 = randomMove[0];
+			y1 = randomMove[1];
+			x2 = randomMove[2];
+			y2 = randomMove[3];
+
+            for (int i = 0; i < height; i++){
+                for(int j = 0; j < width; j++){
+                    if (i == x1 && j == y1 ){
+                        // State class it needs a method to:
+                        /*
+                        - update board
+                        - update position
+                        - update who's turn it is
+                        */
+                    }
+
+                }
+            }
+
 			return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
 		} else {
 			return "noop";
