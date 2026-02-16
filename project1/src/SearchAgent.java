@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class SearchAgent implements Agent
 {
@@ -13,6 +14,7 @@ public class SearchAgent implements Agent
 
     private State currentState;
     
+    @Override
     public void init(String role, int width, int height, int playclock, int[][] white_positions, int[][] black_positions) {
 		System.out.println("Playing " + role + " on a " + width + "x" + height + " board with " + playclock + "s per move");
 		System.out.println("White starting positions: " + Arrays.deepToString(white_positions));
@@ -119,7 +121,15 @@ public class SearchAgent implements Agent
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
+    @Override
     public String nextAction(int[] lastMove) {
+        try {
+        Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        }
+
+
     	if (lastMove != null) {
     		int x1 = lastMove[0], y1 = lastMove[1], x2 = lastMove[2], y2 = lastMove[3];
     		String roleOfLastPlayer;
@@ -129,7 +139,8 @@ public class SearchAgent implements Agent
     			roleOfLastPlayer = "black";
     		}
    			System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
-            
+
+            currentState = new State(currentState, lastMove);
     	}
 		
     	// update turn (above that line it myTurn is still for the previous state)
@@ -142,8 +153,13 @@ public class SearchAgent implements Agent
 			int x1,y1,x2,y2;
             ArrayList<int[]> legalMoves = LegalMoveArr(lastMove, currentState);
 
+            /* 
+             TODO: Need to test the state space and make sure there are no problems there
+             Afterwards we can start to implement search algorithm alpha beta search
+            */
             if (legalMoves.isEmpty()) {
                 // No legal moves - handle this case
+                System.out.println("Game is over.");
                 return "noop"; // or handle game over
             }
             int[] randomMove = legalMoves.get(random.nextInt(legalMoves.size()));
@@ -152,19 +168,7 @@ public class SearchAgent implements Agent
 			x2 = randomMove[2];
 			y2 = randomMove[3];
 
-            for (int i = 0; i < height; i++){
-                for(int j = 0; j < width; j++){
-                    if (i == x1 && j == y1 ){
-                        // State class it needs a method to:
-                        /*
-                        - update board
-                        - update position
-                        - update who's turn it is
-                        */
-                    }
-
-                }
-            }
+            currentState = new State(currentState, randomMove);
 
 			return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
 		} else {
