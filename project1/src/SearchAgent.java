@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -60,38 +61,59 @@ public class SearchAgent implements Agent
          newBoard, white_positions, black_positions, width, height);
     }
 
-    public int[][] LegalMoveArr(int[] lastMove, State currState){
+    public ArrayList<int[]> LegalMoveArr(int[] lastMove, State currState){
         
         // Need to check for all possible moves if its valid and add to a 2D array
-        int[][] legalMoves;
+        ArrayList<int[]> legalMoves = new ArrayList<>();
         int numPlayers = currState.getWhiteList().length;
         
         int[][] whitePos = currState.getWhiteList();
         int[][] blackPos = currState.getBlackList();
-        
+        char[][] currentBoard = currState.getBoard();
         int width = currState.getWidth();
         int height = currState.getHeight();
 
         int[][] currentPlayerQueens = currState.isMyTurn() ? whitePos : blackPos;
-        // Maybe have a counter = 8 that decreases each direction you have tried to traverse and stop at
-        int directions = 8;
+
+        int[][] directions = {
+        {0, 1},   // up
+        {0, -1},  // down
+        {1, 0},   // right
+        {-1, 0},  // left
+        {1, 1},   // diagonal up-right
+        {1, -1},  // diagonal down-right
+        {-1, 1},  // diagonal up-left
+        {-1, -1}  // diagonal down-left
+        };
 
         for (int[] queen : currentPlayerQueens) {
             int queenX = queen[0];
             int queenY = queen[1];
-            int tempX = queenX;
-            int tempY = queenY;
-            for (int i = 0; i < directions; i++){
-                boolean hitObstacle = false;
-                while (!hitObstacle) {
-                    
+
+            for (int[] direction : directions){
+                int dirX = direction[0];
+                int dirY = direction[1];
+
+                int newX = queenX;
+                int newY = queenY;
+
+                while (true){
+                    newX ++;
+                    newY ++;
+
+                    if (newX < 1 || newX > width || newY < 1 || newY > height){
+                        break;
+                    }
+
+                    if (currentBoard[newX][newY] != '-'){
+                        break;
+                    }
+
+                    legalMoves.add(new int[]{queenX, queenY, newX, newY});
                 }
             }
         }
-
-
-        
-        return null;
+        return legalMoves;
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
