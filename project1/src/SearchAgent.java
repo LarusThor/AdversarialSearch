@@ -122,13 +122,16 @@ public class SearchAgent implements Agent
         } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         }
-        
-        for (int move : lastMove) {
-            System.out.println(("A move: " + move + "\n"));
-        }
+
+        System.out.println("Testing lastMove array: " + Arrays.toString(lastMove) + "\n");
 
     	if (lastMove != null) {
-    		int x1 = lastMove[0], y1 = lastMove[1], x2 = lastMove[2], y2 = lastMove[3];
+            
+            char pieceAtSource = currentState.getBoard()[lastMove[1]-1][lastMove[0]-1];
+            
+            boolean isOpponentMove = (pieceAtSource != 'x');
+        
+            int x1 = lastMove[0], y1 = lastMove[1], x2 = lastMove[2], y2 = lastMove[3];
     		String roleOfLastPlayer;
     		if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")) {
     			roleOfLastPlayer = "white";
@@ -136,8 +139,9 @@ public class SearchAgent implements Agent
     			roleOfLastPlayer = "black";
     		}
    			System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
-
-            currentState = new State(currentState, lastMove);
+            if (isOpponentMove){
+                currentState = new State(currentState, lastMove);
+            }
     	}
 		
     	// update turn (above that line it myTurn is still for the previous state)
@@ -191,7 +195,6 @@ public class SearchAgent implements Agent
 
     @Override
     public void cleanup() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cleanup'");
+
     }
 }

@@ -96,7 +96,7 @@ public class State {
         this.board[y2][x2] = piece;
         this.board[y1][x1] = 'x';
 
-        this.emptySquares = previousState.emptySquares -= 1;
+        this.emptySquares = previousState.emptySquares - 1;
 
         if (previousState.myTurn){
             this.whiteList = copyAndUpdatePositions(previousState.whiteList, action);
