@@ -9,7 +9,6 @@ public class SearchAgent implements Agent
 
     private String role; // the name of this agent's role (white or black)
 	private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
-	private boolean myTurn; // whether it is this agent's turn or not
 	private int width, height; // dimensions of the board
 
     private State currentState;
@@ -54,12 +53,7 @@ public class SearchAgent implements Agent
             newBoard[y][x] = 'b';
         }
 
-        if (role.equals("white"))
-            myTurn = true;
-        else
-            myTurn = false;
-
-        currentState = new State(myTurn, ((width * height) - numberOfQueens),
+        currentState = new State(true, ((width * height) - numberOfQueens),
          newBoard, white_positions, black_positions, width, height);
     }
 
@@ -124,16 +118,19 @@ public class SearchAgent implements Agent
     @Override
     public String nextAction(int[] lastMove) {
         try {
-        Thread.sleep(3000);
+        Thread.sleep(500);
         } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         }
-
+        
+        for (int move : lastMove) {
+            System.out.println(("A move: " + move + "\n"));
+        }
 
     	if (lastMove != null) {
     		int x1 = lastMove[0], y1 = lastMove[1], x2 = lastMove[2], y2 = lastMove[3];
     		String roleOfLastPlayer;
-    		if (myTurn && role.equals("white") || !myTurn && role.equals("black")) {
+    		if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")) {
     			roleOfLastPlayer = "white";
     		} else {
     			roleOfLastPlayer = "black";
@@ -144,22 +141,38 @@ public class SearchAgent implements Agent
     	}
 		
     	// update turn (above that line it myTurn is still for the previous state)
-
 			// TODO: 2. run alpha-beta search to determine the best move
+        if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")){
+
+            System.out.println("isMyTurn: " + currentState.isMyTurn());
+            System.out.println("White queens: " + Arrays.deepToString(currentState.getWhiteList()));
+            System.out.println("Black queens: " + Arrays.deepToString(currentState.getBlackList()));
 
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
 			int x1,y1,x2,y2;
             ArrayList<int[]> legalMoves = LegalMoveArr(lastMove, currentState);
-            System.out.println("legal moves: " + legalMoves + '\n');
-
             /* 
              TODO: Need to test the state space and make sure there are no problems there
              Afterwards we can start to implement search algorithm alpha beta search
             */
-            if (legalMoves.isEmpty()) {
+           if (currentState.isMyTurn())
+            System.out.println("Available moves:");
+            for (int[] move : legalMoves) {
+                System.out.println(Arrays.toString(move));
+            }
+             // DRAW SCENARIO
+            if (currentState.getEmptySquares() <= currentState.getWidth()){
+                System.out.println("Game resulted in draw.");
+                return "noop"; // or handle game over
+            // WHITE WINS SCENARIO
+            } else if (legalMoves.isEmpty() && currentState.isMyTurn()) {
                 // No legal moves - handle this case
-                System.out.println("Game is over.");
+                System.out.println("White wins.");
+                return "noop"; // or handle game over
+            // BLACK WINS SCENARIO
+            } else if (legalMoves.isEmpty() && !currentState.isMyTurn()){
+                System.out.println("Black wins wins.");
                 return "noop"; // or handle game over
             }
             int[] randomMove = legalMoves.get(random.nextInt(legalMoves.size()));
@@ -170,8 +183,10 @@ public class SearchAgent implements Agent
 
             currentState = new State(currentState, randomMove);
 			return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
-		
-	}
+	    } else {
+            return "noop";        
+        }
+    }
 
     @Override
     public void cleanup() {
