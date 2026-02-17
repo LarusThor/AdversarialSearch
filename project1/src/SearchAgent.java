@@ -124,7 +124,7 @@ public class SearchAgent implements Agent
     @Override
     public String nextAction(int[] lastMove) {
         try {
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         }
@@ -144,14 +144,14 @@ public class SearchAgent implements Agent
     	}
 		
     	// update turn (above that line it myTurn is still for the previous state)
-		myTurn = !myTurn;
-		if (myTurn) {
+
 			// TODO: 2. run alpha-beta search to determine the best move
 
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
 			int x1,y1,x2,y2;
             ArrayList<int[]> legalMoves = LegalMoveArr(lastMove, currentState);
+            System.out.println("legal moves: " + legalMoves + '\n');
 
             /* 
              TODO: Need to test the state space and make sure there are no problems there
@@ -169,11 +169,8 @@ public class SearchAgent implements Agent
 			y2 = randomMove[3];
 
             currentState = new State(currentState, randomMove);
-
 			return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
-		} else {
-			return "noop";
-		}
+		
 	}
 
     @Override
