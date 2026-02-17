@@ -113,6 +113,69 @@ public class SearchAgent implements Agent
         return legalMoves;
     }
 
+    public int hasLegalMove(State state, int score) {
+        // For each queen, check each direction
+        // Return true as soon as you find ONE valid move
+        // Don't need to find all moves!
+
+        int[][] whitePos = state.getWhiteList();
+        int[][] blackPos = state.getBlackList();
+
+        int[][] directions = {
+        {0, 1},   // up
+        {0, -1},  // down
+        {1, 0},   // right
+        {-1, 0},  // left
+        {1, 1},   // diagonal up-right
+        {1, -1},  // diagonal down-right
+        {-1, 1},  // diagonal up-left
+        {-1, -1}  // diagonal down-left
+        };
+
+        int[][] currentPlayerQueens = state.isMyTurn() ? whitePos : blackPos;
+        int value = 0;
+
+        for (int[] queen : currentPlayerQueens) {
+            int queenX = queen[0];
+            int queenY = queen[1];
+
+            for (int[] direction : directions){
+                int dirX = direction[0];
+                int dirY = direction[1];
+
+                int newX = queenX;
+                int newY = queenY;
+                newX += dirX;
+                newY += dirY;
+
+                if (newX < 1 || newX > width || newY < 1 || newY > height){
+                    break;
+                }
+                char [][]board = state.getBoard();
+                char square = board[newY-1][newX-1];
+
+                if (square != '-'){
+                    continue;
+                } else {
+                    value += 1;
+                    break;
+                }
+            }
+        }
+        return value;
+    }
+
+    public int evaluate(State state){
+        // 
+        if (state.isMyTurn()){
+            int value = 0;
+            value = hasLegalMove(state, value);
+            
+
+        } 
+        return 0;
+    }
+
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
     @Override
