@@ -188,6 +188,7 @@ public class AlphaBetaAgent implements Agent
         return -moveableWhiteQueens;
     }
 
+    /*
     int AlphaBeta (int depth, State s, int alpha, int beta) {
             
         if ( s is terminal or depth <= 0 )
@@ -209,6 +210,8 @@ public class AlphaBetaAgent implements Agent
     }
         return bestValue;   
     }
+    
+    */
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
@@ -259,25 +262,22 @@ public class AlphaBetaAgent implements Agent
             int[] bestMove;
             int depth = 1;
             
-            int INF = 1000000
-            int alpha = -INF
-            int beta = INF
-            double alpha = Double.NEGATIVE_INFINITY;
-            double beta = Double.POSITIVE_INFINITY;
+            int INF = 1_000_000;
+            int alpha = -INF;
+            int beta = INF;
+            int bestValue = -INF;
+            int remainingTime = this.playclock;
             
             
             for (int[] move : legalMoves){
-                    value = -AlphaBeta(depth + 1, result(state, m), -beta, -alpha)
-
-                if value > bestValue:
-                    bestValue = value
-                    bestMove = move
+                int value = -AlphaBeta(depth + 1, result(state, move), -beta, -alpha);
+                if (value > bestValue){
+                    bestValue = value;
+                    bestMove = move;
+                }
             }
-
-            
-        
-            */
-           
+             */
+        //    
             // int[][] bestMove = AlphaBeta( MaxDepth, s, -INF, INF )
             
 
@@ -308,12 +308,13 @@ public class AlphaBetaAgent implements Agent
             // }
 
 
-            currentState = new State(currentState, randomMove);
+            //currentState = new State(currentState, randomMove);
 
-			return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
-	    } else {
-            return "noop";        
+		// 	return "(play " + x1 + " " + y1 + " " + x2 + " " + y2 + ")";
+	    // } else {
+        //     return "noop";        
         }
+        return "noop";
     }
 
     @Override
