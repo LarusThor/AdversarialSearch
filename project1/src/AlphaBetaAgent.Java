@@ -58,7 +58,7 @@ public class AlphaBetaAgent implements Agent
          newBoard, white_positions, black_positions, width, height);
     }
 
-    public ArrayList<int[]> LegalMoveArr(int[] lastMove, State currState){
+    public ArrayList<int[]> LegalMoveArr(State currState){
         
         // Need to check for all possible moves if its valid and add to a 2D array
         ArrayList<int[]> legalMoves = new ArrayList<>();
@@ -188,30 +188,54 @@ public class AlphaBetaAgent implements Agent
         return -moveableWhiteQueens;
     }
 
-    /*
-    int AlphaBeta (int depth, State s, int alpha, int beta) {
+    // for (int[] move : legalMoves){
+
+    //             int value = -AlphaBeta(depth-1, result(currentState, move), -beta, -alpha);
+    //             if (value > bestValue){
+    //                 bestValue = value;
+    //                 bestMove = move;
+    //             }
+    //         }
+
+    //AlphaBeta(currentState, depth, -INF, INF, true);
+
+    public boolean is_Terminal(State s){
+        int check = evaluate(s);
+        if ((Math.abs(check) == 100) || (check == 0 && (s.getEmptySquares() <= s.getWidth())))
+            return true;
+        return false;
+    }
+
+    int AlphaBeta(State s, int depth, int alpha, int beta, boolean myTurn){
+        
+        if (depth == 0 || is_Terminal(s))
+            return evaluate(s);
+        if (role.equals("white") && s.isMyTurn()){
+            int value = alpha;
             
-        if ( s is terminal or depth <= 0 )
-            return evaluate( s );
-        
-        bestValue = -INF;
-        
-        for ( for all successors s’ of s ) {
-            value = - AlphaBeta( depth–1, s’, - beta, - alpha );
-            (Note: switch and negate bounds)
-            bestValue = max( value, bestValue);
-        
-            if ( bestValue > alpha ) {
-        
-            alpha = bestValue; (adjust the lower bound)
-        
-            if ( alpha >= beta ) break; (beta cutoff)
-        }
+            ArrayList<int[]> children = LegalMoveArr(currentState);
+            for (int[] child : children){
+                
+            }
+            // for each child of node do
+            //     value := max(value, alphabeta(child, depth − 1, α, β, FALSE))
+            //     if value ≥ β then
+            //         break (* β cutoff *)
+            //     α := max(α, value)
+            // return value
+        } else {
+            int value = beta;
+
+
+            
+            // for each child of node do
+            //     value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
+            //     if value ≤ α then
+            //         break (* α cutoff *)
+            //     β := min(β, value)
+            // return value
+        }   
     }
-        return bestValue;   
-    }
-    
-    */
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
@@ -259,7 +283,7 @@ public class AlphaBetaAgent implements Agent
 
             
             //At the root level:
-            int[] bestMove;
+            int bestMove;
             int depth = 1;
             
             int INF = 1_000_000;
@@ -268,19 +292,8 @@ public class AlphaBetaAgent implements Agent
             int bestValue = -INF;
             int remainingTime = this.playclock;
             
-            
-            for (int[] move : legalMoves){
-                int value = -AlphaBeta(depth + 1, result(state, move), -beta, -alpha);
-                if (value > bestValue){
-                    bestValue = value;
-                    bestMove = move;
-                }
-            }
-             */
-        //    
-            // int[][] bestMove = AlphaBeta( MaxDepth, s, -INF, INF )
-            
-
+            // should bestMove be int[]?
+            bestMove = AlphaBeta(currentState, depth, alpha, beta, true);
          
             //  TODO: Need to test the state space and make sure there are no problems there
             //  Afterwards we can start to implement search algorithm alpha beta search
