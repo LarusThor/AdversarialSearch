@@ -5,9 +5,14 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/*
+THIS IS AN IMPROVED VERSION OF ALPHA-BETA AGENT WITH BETTER EVALUATION FUNCTION
+EVALUATION FUNCTION IS BASED ON HOW MANY OPEN MOVES EACH QUEEN HAS INSTEAD OF IF IT HAS ANY AT ALL
+*/
 
-public class AlphaBetaAgent implements Agent
-{
+
+public class AlphaBetaImproved implements Agent {
+
     private Random random = new Random();
 
     private String role; // the name of this agent's role (white or black)
@@ -159,8 +164,9 @@ public class AlphaBetaAgent implements Agent
                     continue;
                 } else {
                     //we found a move for this queen
+                    // TODO: Here we increment the score based on how many moveable directions each queen has
                     moveableQueens += 1;
-                    break;
+                    continue;
                 }
             }
         }
@@ -321,4 +327,4 @@ public class AlphaBetaAgent implements Agent
     public void cleanup() {
 
         }
-    }
+}
