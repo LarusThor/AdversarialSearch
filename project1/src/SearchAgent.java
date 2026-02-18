@@ -113,13 +113,9 @@ public class SearchAgent implements Agent
         return legalMoves;
     }
 
-    public int hasLegalMove(State state, int score) {
+    public int hasLegalMove(State state, int[][]player) {
         // For each queen, check each direction
-        // Return true as soon as you find ONE valid move
-        // Don't need to find all moves!
-
-        int[][] whitePos = state.getWhiteList();
-        int[][] blackPos = state.getBlackList();
+        // Return the amount of movable queens 
 
         int[][] directions = {
         {0, 1},   // up
@@ -132,10 +128,9 @@ public class SearchAgent implements Agent
         {-1, -1}  // diagonal down-left
         };
 
-        int[][] currentPlayerQueens = state.isMyTurn() ? whitePos : blackPos;
-        int value = 0;
+        int moveableQueens = 0;
 
-        for (int[] queen : currentPlayerQueens) {
+        for (int[] queen : player) {
             int queenX = queen[0];
             int queenY = queen[1];
 
@@ -147,33 +142,49 @@ public class SearchAgent implements Agent
                 int newY = queenY;
                 newX += dirX;
                 newY += dirY;
-
+                // Square is out of bounds
                 if (newX < 1 || newX > width || newY < 1 || newY > height){
-                    break;
+                    continue;
                 }
                 char [][]board = state.getBoard();
                 char square = board[newY-1][newX-1];
 
                 if (square != '-'){
+                    //Square isn't free
                     continue;
                 } else {
-                    value += 1;
+                    //we found a move for this queen
+                    moveableQueens += 1;
                     break;
                 }
             }
         }
-        return value;
+        
+        return moveableQueens;
     }
 
     public int evaluate(State state){
         // 
-        if (state.isMyTurn()){
-            int value = 0;
-            value = hasLegalMove(state, value);
-            
 
+        int moveableWhiteQueens = 0;
+        int moveableBlackQueens = 0;
+        
+        moveableWhiteQueens = hasLegalMove(state, state.getWhiteList());
+        
+        moveableBlackQueens = hasLegalMove(state, state.getBlackList());
+        
+        if (moveableWhiteQueens  <= 0 && moveableBlackQueens <= 0) return 0;
+        else if (moveableWhiteQueens <= 0)
+            moveableBlackQueens = 100;
+        else if (moveableBlackQueens <= 0)
+            moveableWhiteQueens = 100;
+        
+        moveableWhiteQueens = moveableWhiteQueens - moveableBlackQueens;
+        
+        if (role.equals("white")){
+            return moveableWhiteQueens;
         } 
-        return 0;
+        return -moveableWhiteQueens;
     }
 
     // lastMove is null the first time nextAction gets called (in the initial state)
