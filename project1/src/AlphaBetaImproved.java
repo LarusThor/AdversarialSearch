@@ -175,27 +175,31 @@ public class AlphaBetaImproved implements Agent {
     }
 
     public int evaluate(State state){
-        // 
+        // CHANGED FROM EVAL PLAYER OPEN DIRECTIONS OF QUEENS TO EVAL OPPONENTS OPEN DIRECTIONS (TRY TO DECREASE)
 
-        int moveableWhiteQueens = 0;
-        int moveableBlackQueens = 0;
+        //int moveableWhiteQueens = 0;
+        int opponenMoves = 0;
         
-        moveableWhiteQueens = hasLegalMove(state, state.getWhiteList());
+        //moveableWhiteQueens = hasLegalMove(state, state.getWhiteList());
         
-        moveableBlackQueens = hasLegalMove(state, state.getBlackList());
+        // Takmarka
+        if (role == "white")
+            opponenMoves = hasLegalMove(state, state.getBlackList());
+        else
+            opponenMoves = hasLegalMove(state, state.getWhiteList());
+        // if (moveableWhiteQueens  <= 0 && moveableBlackQueens <= 0) return 0;
+        // else if (moveableWhiteQueens <= 0)
+        //     moveableBlackQueens = 100;
+        // else if (moveableBlackQueens <= 0)
+        //     moveableWhiteQueens = 100;
         
-        if (moveableWhiteQueens  <= 0 && moveableBlackQueens <= 0) return 0;
-        else if (moveableWhiteQueens <= 0)
-            moveableBlackQueens = 100;
-        else if (moveableBlackQueens <= 0)
-            moveableWhiteQueens = 100;
+        // moveableWhiteQueens = moveableWhiteQueens - moveableBlackQueens;
         
-        moveableWhiteQueens = moveableWhiteQueens - moveableBlackQueens;
-        
-        if (role.equals("white")){
-            return moveableWhiteQueens;
-        } 
-        return -moveableWhiteQueens;
+        // if (role.equals("white")){
+        //     return moveableWhiteQueens;
+        // } 
+        // return -moveableWhiteQueens;
+        return -opponenMoves;
     }
 
     public boolean is_Terminal(State s){
