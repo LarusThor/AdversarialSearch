@@ -110,4 +110,52 @@ public class State {
         this.myTurn = !previousState.myTurn;
     }
 
+
+        public void makeMove(int[] move) {
+        int x1 = move[0], y1 = move[1];
+        int x2 = move[2], y2 = move[3];
+
+        // Burn the source square
+        board[y1-1][x1-1] = 'x';
+        // Place queen at destination
+        board[y2-1][x2-1] = myTurn ? 'w' : 'b';
+
+        // Update queen list
+        int[][] queens = myTurn ? whiteList : blackList;
+        for (int[] queen : queens) {
+            if (queen[0] == x1 && queen[1] == y1) {
+                queen[0] = x2;
+                queen[1] = y2;
+                break;
+            }
+        }
+
+        emptySquares--;
+        myTurn = !myTurn;
+    }
+
+    public void unmakeMove(int[] move) {
+        int x1 = move[0], y1 = move[1];
+        int x2 = move[2], y2 = move[3];
+
+        // Flip turn back first so we get the right queen list
+        myTurn = !myTurn;
+
+        // Move queen back
+        int[][] queens = myTurn ? whiteList : blackList;
+        for (int[] queen : queens) {
+            if (queen[0] == x2 && queen[1] == y2) {
+                queen[0] = x1;
+                queen[1] = y1;
+                break;
+            }
+        }
+
+        // Restore squares
+        board[y1-1][x1-1] = myTurn ? 'w' : 'b';
+        board[y2-1][x2-1] = '-';
+
+        emptySquares++;
+    }
+
 }

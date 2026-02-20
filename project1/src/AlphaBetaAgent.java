@@ -20,9 +20,9 @@ public class AlphaBetaAgent implements Agent
     
     @Override
     public void init(String role, int width, int height, int playclock, int[][] white_positions, int[][] black_positions) {
-		System.out.println("Playing " + role + " on a " + width + "x" + height + " board with " + playclock + "s per move");
-		System.out.println("White starting positions: " + Arrays.deepToString(white_positions));
-		System.out.println("Black starting positions: " + Arrays.deepToString(black_positions));
+		// ("Playing " + role + " on a " + width + "x" + height + " board with " + playclock + "s per move");
+		// ("White starting positions: " + Arrays.deepToString(white_positions));
+		// ("Black starting positions: " + Arrays.deepToString(black_positions));
 		
 		this.role = role;
 		this.playclock = playclock;
@@ -33,8 +33,8 @@ public class AlphaBetaAgent implements Agent
 
         int numberOfQueens = white_positions.length + black_positions.length;
         
-        System.out.println("White positions: " + white_positions + "\n");
-        System.out.println("Black positions: " + black_positions + "\n");
+        // ("White positions: " + white_positions + "\n");
+        // ("Black positions: " + black_positions + "\n");
 
         // White starting positions: [[2, 1], [3, 1]]
         // Black starting positions: [[2, 4], [3, 4]]
@@ -160,7 +160,7 @@ public class AlphaBetaAgent implements Agent
                 } else {
                     //we found a move for this queen
                     moveableQueens += 1;
-                    break;
+                    continue;
                 }
             }
         }
@@ -216,7 +216,7 @@ public class AlphaBetaAgent implements Agent
             int value = -1_000_000;
             for (int[] a : actions){
                 State child = new State(s, a);
-                value = Math.max(value, AlphaBeta(child, depth-1, alpha, beta));
+                value = Math.max(value, AlphaBeta(s, depth-1, alpha, beta));
                 if (value >= beta)
                     break;
                 alpha = Math.max(alpha, value);
@@ -252,7 +252,6 @@ public class AlphaBetaAgent implements Agent
     		} else {
     			roleOfLastPlayer = "black";
     		}
-   			System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
             if (isOpponentMove){
                 currentState = new State(currentState, lastMove);
             }
@@ -261,10 +260,6 @@ public class AlphaBetaAgent implements Agent
     	// update turn (above that line it myTurn is still for the previous state)
 			// TODO: 2. run alpha-beta search to determine the best move
         if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")){
-
-            System.out.println("isMyTurn: " + currentState.isMyTurn());
-            System.out.println("White queens: " + Arrays.deepToString(currentState.getWhiteList()));
-            System.out.println("Black queens: " + Arrays.deepToString(currentState.getBlackList()));
 
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
@@ -281,7 +276,6 @@ public class AlphaBetaAgent implements Agent
             
             while (true) {
                 try {
-                    System.out.println("Completed depth: " + depth);
                     int alpha = -INF;
                     int beta = INF;
                     int[] candidate = null;
@@ -292,18 +286,18 @@ public class AlphaBetaAgent implements Agent
                             throw new TimeoutException();
                         State child = new State(currentState, a);
                         int value = AlphaBeta(child, depth-1, alpha, beta);
-                        System.out.println("Move: " + Arrays.toString(a) + " Score: " + value); // add this
+                        //("Move: " + Arrays.toString(a) + " Score: " + value); // add this
                         if (value > bestValue){
                             bestValue = value;
                             candidate = a;
                         }
                     }
                     bestMove = candidate;
-                    System.out.println("Searching depth: " + depth);
+                    //("Searching depth: " + depth);
                     depth += 1;
                 }
                 catch (TimeoutException e){
-                    System.out.println("TIME RAN OUT at depth: " + depth);
+                    //("TIME RAN OUT at depth: " + depth);
                     break;
                 }
             }

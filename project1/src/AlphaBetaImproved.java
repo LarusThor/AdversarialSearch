@@ -158,7 +158,6 @@ public class AlphaBetaImproved implements Agent {
                 }
                 char [][]board = state.getBoard();
                 char square = board[newY-1][newX-1];
-
                 if (square != '-'){
                     //Square isn't free
                     continue;
@@ -178,27 +177,15 @@ public class AlphaBetaImproved implements Agent {
         // CHANGED FROM EVAL PLAYER OPEN DIRECTIONS OF QUEENS TO EVAL OPPONENTS OPEN DIRECTIONS (TRY TO DECREASE)
 
         //int moveableWhiteQueens = 0;
-        int opponenMoves = 0;
-        
-        //moveableWhiteQueens = hasLegalMove(state, state.getWhiteList());
-        
+        int opponenMoves = 0;        
         // Takmarka
-        if (role == "white")
+        //TODO: Check if less hasLegalMove checks is better with less time 
+        if (role.equals("white")){
             opponenMoves = hasLegalMove(state, state.getBlackList());
-        else
+            }
+        else{
             opponenMoves = hasLegalMove(state, state.getWhiteList());
-        // if (moveableWhiteQueens  <= 0 && moveableBlackQueens <= 0) return 0;
-        // else if (moveableWhiteQueens <= 0)
-        //     moveableBlackQueens = 100;
-        // else if (moveableBlackQueens <= 0)
-        //     moveableWhiteQueens = 100;
-        
-        // moveableWhiteQueens = moveableWhiteQueens - moveableBlackQueens;
-        
-        // if (role.equals("white")){
-        //     return moveableWhiteQueens;
-        // } 
-        // return -moveableWhiteQueens;
+        }
         return -opponenMoves;
     }
 
@@ -227,6 +214,7 @@ public class AlphaBetaImproved implements Agent {
             for (int[] a : actions){
                 State child = new State(s, a);
                 value = Math.max(value, AlphaBeta(child, depth-1, alpha, beta));
+
                 if (value >= beta)
                     break;
                 alpha = Math.max(alpha, value);
@@ -306,6 +294,7 @@ public class AlphaBetaImproved implements Agent {
                         if (value > bestValue){
                             bestValue = value;
                             candidate = a;
+                            alpha = Math.max(alpha, value);
                         }
                     }
                     bestMove = candidate;
