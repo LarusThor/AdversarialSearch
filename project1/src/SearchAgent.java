@@ -3,6 +3,9 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class SearchAgent implements Agent
 {
     private Random random = new Random();
@@ -10,14 +13,11 @@ public class SearchAgent implements Agent
     private String role; // the name of this agent's role (white or black)
 	private int playclock; // this is how much time (in seconds) we have before nextAction needs to return a move
 	private int width, height; // dimensions of the board
-
     private State currentState;
     
     @Override
     public void init(String role, int width, int height, int playclock, int[][] white_positions, int[][] black_positions) {
-		System.out.println("Playing " + role + " on a " + width + "x" + height + " board with " + playclock + "s per move");
-		System.out.println("White starting positions: " + Arrays.deepToString(white_positions));
-		System.out.println("Black starting positions: " + Arrays.deepToString(black_positions));
+	
 		
 		this.role = role;
 		this.playclock = playclock;
@@ -25,15 +25,7 @@ public class SearchAgent implements Agent
 		this.height = height;
         
         char[][] newBoard = new char[height][width];
-
         int numberOfQueens = white_positions.length + black_positions.length;
-        
-        System.out.println("White positions: " + white_positions + "\n");
-        System.out.println("Black positions: " + black_positions + "\n");
-
-        // White starting positions: [[2, 1], [3, 1]]
-        // Black starting positions: [[2, 4], [3, 4]]
-        // java -jar chesslikesim.jar
 
         for (int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
@@ -164,8 +156,6 @@ public class SearchAgent implements Agent
     }
 
     public int evaluate(State state){
-        // 
-
         int moveableWhiteQueens = 0;
         int moveableBlackQueens = 0;
         
@@ -189,15 +179,9 @@ public class SearchAgent implements Agent
 
     // lastMove is null the first time nextAction gets called (in the initial state)
     // otherwise it contains the coordinates x1,y1,x2,y2 of the move that the last player did
+
     @Override
     public String nextAction(int[] lastMove) {
-        try {
-        Thread.sleep(500);
-        } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        }
-
-        System.out.println("Testing lastMove array: " + Arrays.toString(lastMove) + "\n");
 
     	if (lastMove != null) {
             
@@ -212,46 +196,26 @@ public class SearchAgent implements Agent
     		} else {
     			roleOfLastPlayer = "black";
     		}
-   			System.out.println(roleOfLastPlayer + " moved from " + x1 + "," + y1 + " to " + x2 + "," + y2);
             if (isOpponentMove){
                 currentState = new State(currentState, lastMove);
             }
     	}
-		
-    	// update turn (above that line it myTurn is still for the previous state)
-			// TODO: 2. run alpha-beta search to determine the best move
+
         if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")){
-
-            System.out.println("isMyTurn: " + currentState.isMyTurn());
-            System.out.println("White queens: " + Arrays.deepToString(currentState.getWhiteList()));
-            System.out.println("Black queens: " + Arrays.deepToString(currentState.getBlackList()));
-
 			// Here we just construct a random move (that will most likely not even be possible),
 			// this needs to be replaced with the actual best move.
 			int x1,y1,x2,y2;
             ArrayList<int[]> legalMoves = LegalMoveArr(lastMove, currentState);
-            /* 
-             TODO: Need to test the state space and make sure there are no problems there
-             Afterwards we can start to implement search algorithm alpha beta search
-            */
-           if (currentState.isMyTurn())
-            System.out.println("Available moves:");
-            for (int[] move : legalMoves) {
-                System.out.println(Arrays.toString(move));
-            }
+
              // DRAW SCENARIO
             if (currentState.getEmptySquares() <= currentState.getWidth()){
-                System.out.println("Game resulted in draw.");
-                return "noop"; // or handle game over
-            // WHITE WINS SCENARIO
+                return "noop";
+            // MY QUEENS HAVE NO MOVES - I LOSE
             } else if (legalMoves.isEmpty() && currentState.isMyTurn()) {
-                // No legal moves - handle this case
-                System.out.println("White wins.");
-                return "noop"; // or handle game over
-            // BLACK WINS SCENARIO
+                return "noop";
+            // OPPONENT HAS NO MOVES - I WIN
             } else if (legalMoves.isEmpty() && !currentState.isMyTurn()){
-                System.out.println("Black wins wins.");
-                return "noop"; // or handle game over
+                return "noop";
             }
             int[] randomMove = legalMoves.get(random.nextInt(legalMoves.size()));
 			x1 = randomMove[0];

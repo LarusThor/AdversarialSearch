@@ -20,10 +20,7 @@ public class AlphaBetaAgent implements Agent
     
     @Override
     public void init(String role, int width, int height, int playclock, int[][] white_positions, int[][] black_positions) {
-		// ("Playing " + role + " on a " + width + "x" + height + " board with " + playclock + "s per move");
-		// ("White starting positions: " + Arrays.deepToString(white_positions));
-		// ("Black starting positions: " + Arrays.deepToString(black_positions));
-		
+
 		this.role = role;
 		this.playclock = playclock;
 		this.width = width;
@@ -32,13 +29,6 @@ public class AlphaBetaAgent implements Agent
         char[][] newBoard = new char[height][width];
 
         int numberOfQueens = white_positions.length + black_positions.length;
-        
-        // ("White positions: " + white_positions + "\n");
-        // ("Black positions: " + black_positions + "\n");
-
-        // White starting positions: [[2, 1], [3, 1]]
-        // Black starting positions: [[2, 4], [3, 4]]
-        // java -jar chesslikesim.jar
 
         for (int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
@@ -169,7 +159,6 @@ public class AlphaBetaAgent implements Agent
     }
 
     public int evaluate(State state){
-        // 
 
         int moveableWhiteQueens = 0;
         int moveableBlackQueens = 0;
@@ -256,14 +245,9 @@ public class AlphaBetaAgent implements Agent
                 currentState = new State(currentState, lastMove);
             }
     	}
-		
-    	// update turn (above that line it myTurn is still for the previous state)
-			// TODO: 2. run alpha-beta search to determine the best move
+
         if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")){
 
-			// Here we just construct a random move (that will most likely not even be possible),
-			// this needs to be replaced with the actual best move.
-            //At the root level:
             int[] bestMove = null;
             int depth = 1;
             
@@ -286,18 +270,16 @@ public class AlphaBetaAgent implements Agent
                             throw new TimeoutException();
                         State child = new State(currentState, a);
                         int value = AlphaBeta(child, depth-1, alpha, beta);
-                        //("Move: " + Arrays.toString(a) + " Score: " + value); // add this
+                        
                         if (value > bestValue){
                             bestValue = value;
                             candidate = a;
                         }
                     }
                     bestMove = candidate;
-                    //("Searching depth: " + depth);
                     depth += 1;
                 }
                 catch (TimeoutException e){
-                    //("TIME RAN OUT at depth: " + depth);
                     break;
                 }
             }

@@ -37,13 +37,6 @@ public class AlphaBetaImproved implements Agent {
         char[][] newBoard = new char[height][width];
 
         int numberOfQueens = white_positions.length + black_positions.length;
-        
-        System.out.println("White positions: " + white_positions + "\n");
-        System.out.println("Black positions: " + black_positions + "\n");
-
-        // White starting positions: [[2, 1], [3, 1]]
-        // Black starting positions: [[2, 4], [3, 4]]
-        // java -jar chesslikesim.jar
 
         for (int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
@@ -163,7 +156,6 @@ public class AlphaBetaImproved implements Agent {
                     continue;
                 } else {
                     //we found a move for this queen
-                    // TODO: Here we increment the score based on how many moveable directions each queen has
                     moveableQueens += 1;
                     continue;
                 }
@@ -175,11 +167,8 @@ public class AlphaBetaImproved implements Agent {
 
     public int evaluate(State state){
         // CHANGED FROM EVAL PLAYER OPEN DIRECTIONS OF QUEENS TO EVAL OPPONENTS OPEN DIRECTIONS (TRY TO DECREASE)
-
-        //int moveableWhiteQueens = 0;
         int opponenMoves = 0;        
-        // Takmarka
-        //TODO: Check if less hasLegalMove checks is better with less time 
+
         if (role.equals("white")){
             opponenMoves = hasLegalMove(state, state.getBlackList());
             }
@@ -256,17 +245,10 @@ public class AlphaBetaImproved implements Agent {
             }
     	}
 		
-    	// update turn (above that line it myTurn is still for the previous state)
-			// TODO: 2. run alpha-beta search to determine the best move
+   
         if (currentState.isMyTurn() && role.equals("white") || !currentState.isMyTurn() && role.equals("black")){
 
-            System.out.println("isMyTurn: " + currentState.isMyTurn());
-            System.out.println("White queens: " + Arrays.deepToString(currentState.getWhiteList()));
-            System.out.println("Black queens: " + Arrays.deepToString(currentState.getBlackList()));
-
-			// Here we just construct a random move (that will most likely not even be possible),
-			// this needs to be replaced with the actual best move.
-            //At the root level:
+		
             int[] bestMove = null;
             int depth = 1;
             

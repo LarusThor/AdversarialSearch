@@ -9,9 +9,9 @@ public class Main {
             // Pick agent based on second argument
             Agent agent;
             if(args.length >= 2 && args[1].equals("random")){
-                agent = new RandomAgent();
+                agent = new SearchAgent();
             } else if(args.length >= 2 && args[1].equals("alphabeta")){
-                agent = new AlphaBetaAgent();
+                agent = new AlphaBetaLogging();
             } else {
                 agent = new AlphaBetaImproved(); // default
             }
@@ -34,7 +34,7 @@ public class Main {
 // 	public static void main(String[] args){
 // 		try{
 // 			// TODO: put in your agent here
-// 			Agent agent = new AlphaBetaImproved();
+// 			Agent agent = new SearchAgent();
 
 // 			int port=4001;
 // 			if(args.length>=1){
